@@ -1,0 +1,24 @@
+{
+  "name": "nodescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YiroYi/nodeScript.git"
+  },
+  "author": "Yiro Yi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YiroYi/nodeScript/issues"
+  },
+  "homepage": "https://github.com/YiroYi/nodeScript#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
