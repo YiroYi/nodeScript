@@ -2,6 +2,10 @@ const express = require('express');
 
 const app = express();
 
+app.set('view engine', 'pug');
+
+app.set('views', 'views');
+
 const path = require('path');
 
 const adminData = require('./routes/admin');
