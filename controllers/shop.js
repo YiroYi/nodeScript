@@ -37,32 +37,50 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart(cart => {
-    Product.fetchAll(products => {
-      const cartProducts = [];
-      for (product of products) {
-        const cartProductData = cart.products.find(
-          prod => prod.id === product.id
-        );
-        if (cartProductData) {
-          cartProducts.push({ productData: product, qty: cartProductData.qty });
-        }
-      }
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: cartProducts
-      });
-    });
-  });
+  req.user.getCart()//THis is a magic method that comes from the relation of the model
+  .then(cart => {
+    return cart
+      .getProducts()
+      .then(products => {
+        res.render('shop/cart', {
+          path: '/cart',
+          pageTitle: 'Your Cart',
+          products: products
+        });
+      })
+      .catch(err => console.log(err));
+  })
+  .catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product => {
-    Cart.addProduct(prodId, product.price);
-  });
-  res.redirect('/cart');
+  let fetchedCart;
+
+  req.user.getCart()//THis is a magic method that comes from the relation of the model
+  .then(cart => {
+    fetchedCart = cart;
+    return cart.getProducts({where:{id: prodId}})
+  })
+  .then(products => {
+    let product;
+    if(products.length > 0) {
+      const product = products[0];
+    }
+
+    let newQuantity = 1;
+    if(product) {
+
+    }
+    return Product.findByPk(prodId)
+      .then(product => {
+        return fetchedCart.addProduct(product, {
+          through: { quantity: newQuantity }
+        }); //addProduct is another magic method
+      })
+      .catch(err => console.log(err));
+  })
+  .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
