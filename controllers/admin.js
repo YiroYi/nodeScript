@@ -16,8 +16,12 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const product = new Product(null, title, imageUrl, description, price);
 
-  product.save();
-  res.redirect('/');
+  product
+    .save()
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -62,12 +66,15 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('admin/products', {pageTitle: 'Shop',
-                        prods: products,
-                        pageTitle:'Admin products',
-                        docTitle: 'Shop',
-                        path: '/'
-    });
-  });
+  Product.fetchAll()
+      .then(([rows,fieldData]) => {
+        res.render('admin/products', {
+          prods: rows,
+          pageTitle: 'Admin products',
+          path: '/'
+        });
+      })
+      .catch(err => {
+        console.log(err)
+      });
 };
